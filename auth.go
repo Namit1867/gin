@@ -114,3 +114,4 @@ func BasicAuthForProxy(accounts Accounts, realm string) HandlerFunc {
 		c.Set(AuthProxyUserKey, proxyUser)
 	}
 }
+
