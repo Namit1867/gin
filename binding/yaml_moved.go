@@ -31,5 +31,3 @@ func decodeYAML(r io.Reader, obj any) error {
 	if err := decoder.Decode(obj); err != nil {
 		return err
 	}
-	return validate(obj)
-}

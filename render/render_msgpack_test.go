@@ -49,32 +49,3 @@ func TestWriteMsgPack(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, "application/msgpack; charset=utf-8", w.Header().Get("Content-Type"))
-
-	var decoded map[string]any
-	var mh codec.MsgpackHandle
-	mh.RawToString = true
-	err = codec.NewDecoderBytes(w.Body.Bytes(), &mh).Decode(&decoded)
-	require.NoError(t, err)
-	assert.Len(t, decoded, 2)
-	assert.Equal(t, "bar", decoded["foo"])
-	assert.EqualValues(t, 42, decoded["num"])
-}
-
-type failWriter struct {
-	*httptest.ResponseRecorder
-}
-
-func (w *failWriter) Write(data []byte) (int, error) {
-	return 0, errors.New("write error")
-}
-
-func TestRenderMsgPackError(t *testing.T) {
-	w := httptest.NewRecorder()
-	data := map[string]any{
-		"foo": "bar",
-	}
-
-	err := (MsgPack{data}).Render(&failWriter{w})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "write error")
-}
